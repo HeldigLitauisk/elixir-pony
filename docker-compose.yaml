@@ -1,0 +1,7 @@
+version: '3.4'
+services:
+  elixir-pony:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elixir-pony:latest
