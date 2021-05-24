@@ -42,7 +42,7 @@ defmodule Maze.PonyApi do
 
   ## Private methods
 
-  defp init_json_values(width \\ 20, height \\ 20, pony_name \\ "Applejack", difficulty \\ 1) do
+  defp init_json_values(width \\ 25, height \\ 25, pony_name \\ "Applejack", difficulty \\ 10) do
     Jason.encode!(%{
       "maze-width" => width,
       "maze-height" => height,

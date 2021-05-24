@@ -1,7 +1,7 @@
 defmodule Maze.PonyController do
   use GenServer
 
-  @interval 3_000
+  @interval 5_000
 
   def start_link(maze_id, finish_loc) do
     GenServer.start_link(__MODULE__, [maze_id, finish_loc], name: __MODULE__)

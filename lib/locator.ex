@@ -1,6 +1,6 @@
 defmodule Maze.Locator do
-  @height 20
-  @width 20
+  @height 25
+  @width 25
 
   def locate_pony(%{"pony" => pony}), do: print_location(pony)
   def locate_domokun(%{"domokun" => domokun}), do: print_location(domokun)

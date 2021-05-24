@@ -1,8 +1,8 @@
 defmodule Maze.Chromosome do
-  @path_length 1000
-  @nearby_domokun 100
+  @path_length 2000
+  @nearby_domokun 100000
   @repetitive_move 10
-  @nearby_finish 1000
+  @nearby_finish 10000
   @mutation_prob 0.9
 
   use GenServer
@@ -67,8 +67,9 @@ defmodule Maze.Chromosome do
     {:noreply, state}
   end
 
-  def handle_cast({:refresh_chromosome, maze_state, new_loc, domokun_loc}, state = %{last_loc: last_loc}) do
+  def handle_cast({:refresh_chromosome, maze_state, new_loc, _domokun_loc}, state = %{last_loc: last_loc}) do
     new_path = generate_path(maze_state, new_loc, [], 0)
+    domokun_loc = Maze.Locator.locate_domokun(maze_state)
     fitness = calc_fitness(new_path, domokun_loc, Maze.Locator.locate_finish(maze_state), maze_state, last_loc)
     {:noreply, %{state | maze: maze_state, pony_loc: new_loc, domokun_loc: domokun_loc, fitness: fitness, path: new_path}}
   end
@@ -111,7 +112,7 @@ defmodule Maze.Chromosome do
 
   defp punish_nearby_domokun(path, domokun_loc, maze) do
     {_dir, loc} = Enum.at(path, -1)
-    is_nearby_domokun(loc, get_nearby(maze, domokun_loc))
+    if loc == domokun_loc, do: @nearby_domokun, else: is_nearby_domokun(loc, get_nearby(maze, domokun_loc))
   end
 
   defp return_duplicates(list) do
@@ -164,13 +165,6 @@ defmodule Maze.Chromosome do
     Maze.Locator.get_valid_directions_at(state, loc)
     |> Enum.map(fn direction -> Maze.Locator.get_new_location(direction, loc) end)
   end
-
-#  defp is_nearby_finish(loc, locations) do
-#    case Enum.member?(locations, loc) do
-#      true -> @nearby_finish
-#      false -> 0
-#    end
-#  end
 
   defp is_nearby_domokun(loc, locations) do
     case Enum.member?(locations, loc) do
