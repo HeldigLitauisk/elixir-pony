@@ -55,6 +55,10 @@ defmodule Maze.PonyApi do
   defp get_body(%HTTPoison.Response{body: body}), do: body
   defp get_id(%{"maze_id" => maze_id}), do: maze_id
 
+  defp is_valid_move(%{"state-result" => "You won. Game ended"}, direction) do
+    IO.puts("Moving #{direction} is winning move")
+  end
+
   defp is_valid_move(%{"state-result" => "Can't walk in there"}, direction) do
     IO.puts("Moving #{direction} is invalid")
   end

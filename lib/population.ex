@@ -1,6 +1,6 @@
 defmodule Maze.Population do
-  @population_size 500
-  @generation_count 20
+  @population_size 1000
+  @generation_count 10
   @interval 1_000
 
   use GenServer

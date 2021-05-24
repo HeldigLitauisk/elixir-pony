@@ -18,7 +18,7 @@ defmodule Maze.Application do
         },
         %{
           id: Maze.PonyController,
-          start: {Maze.PonyController, :start_link, [maze_id]}, type: :worker
+          start: {Maze.PonyController, :start_link, [maze_id, finish_loc]}, type: :worker
         }
     ]
 
