@@ -111,7 +111,8 @@ defmodule Maze.Chromosome do
   ## Private methods
 
   defp punish_nearby_domokun(path, domokun_loc, maze) do
-    {_dir, loc} = Enum.at(path, -1)
+    {head, _tail} = Enum.split(path, 1)
+    {_dir, loc} = Enum.at(head, -1)
     if loc == domokun_loc, do: @nearby_domokun, else: is_nearby_domokun(loc, get_nearby(maze, domokun_loc))
   end
 
