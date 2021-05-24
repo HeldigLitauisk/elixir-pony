@@ -1,5 +1,5 @@
 defmodule Maze.Population do
-  @population_size 1000
+  @population_size 100
   @generation_count 10
   @interval 1_000
 

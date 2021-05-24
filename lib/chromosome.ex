@@ -1,8 +1,8 @@
 defmodule Maze.Chromosome do
   @path_length 1000
-  @nearby_domokun 1000000
-  @repetitive_move 1000
-  @nearby_finish 100000
+  @nearby_domokun 100
+  @repetitive_move 10
+  @nearby_finish 1000
   @mutation_prob 0.9
 
   use GenServer
@@ -121,23 +121,29 @@ defmodule Maze.Chromosome do
     |> Enum.map(fn {x, _} -> x end)
   end
 
-  defp punish_repetitive_moves(path) do
+  defp punish_repetitive_moves(path, finish_loc, maze) do
+    finish_locations = get_nearby(maze, finish_loc)
     locations = Enum.map(path, fn {_dir, loc} -> loc end)
     dupl = return_duplicates(locations)
-    Enum.reduce(locations, 0, fn x, acc ->
-      case Enum.member?(dupl, x) do
-        true -> acc - @repetitive_move
-        false -> acc
+    Enum.reduce_while(locations, 0, fn x, acc ->
+      unless Enum.member?(finish_locations, x) do
+        case Enum.member?(dupl, x) do
+          true -> {:cont, acc - @repetitive_move}
+          false -> {:cont, acc}
+        end
+      else
+        {:halt, acc}
       end
     end)
   end
 
   defp reward_finish(path, finish_loc, maze) do
-    locations = get_nearby(maze, finish_loc)
-    Enum.reduce(path, 0, fn {_dir, loc}, acc ->
-      case Enum.member?(locations, loc) do
-        true -> @nearby_finish + acc
-        false -> acc
+    finish_locations = get_nearby(maze, finish_loc)
+    Enum.reduce_while(path, 0, fn {_dir, loc}, acc ->
+      unless Enum.member?(finish_locations, loc) do
+        {:cont, acc}
+      else
+        {:halt, acc + @nearby_finish}
       end
     end)
   end
@@ -151,7 +157,7 @@ defmodule Maze.Chromosome do
   end
 
   defp calc_fitness(path, domokun_loc, finish_loc, maze, last_loc) do
-    punish_repetitive_moves(path) + reward_finish(path, finish_loc, maze) - punish_nearby_domokun(path, domokun_loc, maze) - punish_repeat_last(path, last_loc)
+    punish_repetitive_moves(path, finish_loc, maze) + reward_finish(path, finish_loc, maze) - punish_nearby_domokun(path, domokun_loc, maze) - punish_repeat_last(path, last_loc)
   end
 
   defp get_nearby(state, loc) do

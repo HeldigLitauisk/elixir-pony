@@ -59,6 +59,10 @@ defmodule Maze.PonyApi do
     IO.puts("Moving #{direction} is winning move")
   end
 
+  defp is_valid_move(%{"state-result" => "You lost. Killed by monster"}, direction) do
+    IO.puts("Moving #{direction} is loss. Killed by monster")
+  end
+
   defp is_valid_move(%{"state-result" => "Can't walk in there"}, direction) do
     IO.puts("Moving #{direction} is invalid")
   end
@@ -66,4 +70,5 @@ defmodule Maze.PonyApi do
   defp is_valid_move(%{"state-result" => "Move accepted"}, direction) do
     IO.puts("Moved #{direction}")
   end
+
 end
